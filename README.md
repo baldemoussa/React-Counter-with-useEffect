@@ -1,79 +1,35 @@
-# React + TypeScript + Vite
+# Advanced Counter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React counter on a pale slate page. Increment and Decrement move the count by the current step. The history lists every count. After a short wait, the count, step, and history are saved in the browser under the key `advanced-counter-state`.
 
-Currently, two official plugins are available:
+On a first visit the count is 0, the step is 1, and the history is `0`. The status starts as **Saving...** and changes to **Saved to local storage** about 400ms later. Another change before that wait finishes cancels the pending save and starts a new one.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Screenshots
 
-## React Compiler
+**Start.** Count 0, step 1, history `0`, already saved.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+![Counter at 0 with step 1 and history 0](docs/screenshots/start.png)
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+**Three increments.** Each click adds 1. The history is `0, 1, 2, 3`.
 
-## Expanding the ESLint configuration
+![Counter at 3 with history 0, 1, 2, 3](docs/screenshots/incremented.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Step of 5.** Changing the step does not add a history entry. The next Increment jumps from 3 to 8, so the history is `0, 1, 2, 3, 8`.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+![Counter at 8 with step 5 and history 0, 1, 2, 3, 8](docs/screenshots/step.png)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## How it behaves
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Decrement subtracts the step. Increment adds it. The count can go below zero.
+- Reset sets the count and the history back to `0`. It leaves the step as it is.
+- ArrowUp and ArrowDown do the same as Increment and Decrement. While the step field is focused, those keys stay in the field and do not change the count.
+- The saved value is JSON with `count`, `step`, and `history`. A later visit restores that snapshot. If the stored value is missing or not valid, the counter starts at 0 again.
 
+## Getting started
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-# React-Counter-with-useEffect
+Vite serves the app at `http://localhost:5173/`.
